@@ -2,9 +2,6 @@ function statement(invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-    const format = new Intl.NumberFormat("en-US", {
-        style: "currency", currency: "USD", minimumFractionDigits: 2
-    }).format;
 
     for (let perf of invoice.performances) {
         // 포인트 적립
@@ -20,13 +17,21 @@ function statement(invoice, plays) {
     return result;
 }
 
+function format(aNumber){
+    return new Intl.NumberFormat("en-US", {
+        style: "currency", currency: "USD", minimumFractionDigits: 2
+    }).format(aNumber);
+}
+
+
+// 3. 포인트 추가 함수 추출
 function volumeCreditsFor(perf) {
-    let volumeCredits = 0;
-    volumeCredits = Math.max(perf.audience - 30, 0);
+    let result = 0;
+    result = Math.max(perf.audience - 30, 0);
         // 희극 관객 5명마다 추가 포인트를 제공한다.
     if ("comedy" == playFor(perf).type) 
-        volumeCredits += Math.floor(perf.audience / 5);
-    return volumeCredits;
+        result += Math.floor(perf.audience / 5);
+    return result;
 }
 
 //2. 공연 명 반환
