@@ -1,22 +1,25 @@
-const invoiceDatas = [
-    {
-        "customer" : "BigCo",
-        "performances": [
-            {
-                "playID" : "hamlet",
-                "audience": 55
-            },
-            {
-                "playID" : "as-like",
-                "audience": 35
-            },
-            {
-                "playID" : "othello",
-                "audience": 40
-            }
-        ]
-    }
-]
+const fs = require('fs');
+const jsonFile = fs.readFileSync('/data/invoices.json', 'utf8');
+const invoiceDatas = JSON.parse(jsonFile);
+// const invoiceDatas = [
+//     {
+//         "customer" : "BigCo",
+//         "performances": [
+//             {
+//                 "playID" : "hamlet",
+//                 "audience": 55
+//             },
+//             {
+//                 "playID" : "as-like",
+//                 "audience": 35
+//             },
+//             {
+//                 "playID" : "othello",
+//                 "audience": 40
+//             }
+//         ]
+//     }
+// ]
 
 const playData = {
     "hamlet" : {"name" : "Hamlet" , "type": "tragedy"},
