@@ -1,11 +1,5 @@
 function statement(invoice, plays) {
-    const statementData = {};
-    statementData.customer = invoice.customer;
-    return renderPlainText(statementData, invoice, plays);
-}
-
-function renderPlainText(data, invoice, plays) {
-    let result = `청구 내역 (고객명: ${data.customer})\n`;
+    let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
     for (let perf of invoice.performances) {
         // 청구 내역을 출력
@@ -14,7 +8,7 @@ function renderPlainText(data, invoice, plays) {
 
     result += `총액: ${usd(totalAmount(invoice))}\n`;
     result += `적립 포인트: ${totalVolumeCredits(invoice)}점\n`;
-    return result
+    return result;
 }
 
 function totalAmount(invoice) {
