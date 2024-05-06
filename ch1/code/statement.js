@@ -1,23 +1,30 @@
-interface Performance {
-    playID: string,
-    audience: number,
-}
+const invoiceDatas = [
+    {
+        "customer" : "BigCo",
+        "performances": [
+            {
+                "playID" : "hamlet",
+                "audience": 55
+            },
+            {
+                "playID" : "as-like",
+                "audience": 35
+            },
+            {
+                "playID" : "othello",
+                "audience": 40
+            }
+        ]
+    }
+]
 
-interface Invoice {
-    customer : string;
-    performances: Performance[]
-}
-
-interface Play {
-    name: string;
-    type: string;
-}
-
-type Plays = {
-    [key: string]: Play;
+const playData = {
+    "hamlet" : {"name" : "Hamlet" , "type": "tragedy"},
+    "as-like" : {"name": "As You Like It", "type" : "comedy"},
+    "othello": {"name": "Othello", "type": "tragedy"}
 };
 
-function statement(invoice: Invoice, plays: Plays) {
+function statement(invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `청구 내역 (고객명: ${invoice.customer})\n`;
@@ -52,10 +59,14 @@ function statement(invoice: Invoice, plays: Plays) {
         // 희극 관객 5명마다 추가 포인트를 제공한다.
         if ("comedy" == play.type) volumeCredits += Math.floor(perf.audience / 5);
 
-        //청구 내역을 출력한다
-        result += `총액: ${format(totalAmount / 100)}\n`;
-        result += `적립 포인트: ${volumeCredits}점\n`;
-        return result;
-
+        result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience})석\n`;
+        totalAmount += thisAmount;
     }
+
+    //청구 내역을 출력한다
+    result += `총액: ${format(totalAmount / 100)}\n`;
+    result += `적립 포인트: ${volumeCredits}점\n`;
+    return result;
 }
+
+console.log(statement(invoiceDatas[0],playData))
