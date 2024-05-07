@@ -1,4 +1,4 @@
-import { PerformanceCalculator } from "./PerformanceCalculator.js";
+import { createPerformancecalculator } from "./PerformanceCalculator.js";
 
 export function creatStatmentData(invoice, plays) {
     const result = {};
@@ -40,8 +40,4 @@ export function creatStatmentData(invoice, plays) {
         return plays[aPerformance.playID];
     }
     
-}
-
-function createPerformancecalculator(aPerformance, aPlay) {
-    return new PerformanceCalculator(aPerformance, aPlay);
 }
