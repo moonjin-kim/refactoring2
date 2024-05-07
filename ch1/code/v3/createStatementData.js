@@ -6,14 +6,13 @@ export function creatStatmentData(invoice, plays) {
     result.performances = invoice.performances.map(enrichPerformance);
     result.totalAmount = totalAmount(result);
     result.totalVolumeCredits = totalVolumeCredits(result);
-    console.log(result);
     return result;
 
     function enrichPerformance(aPerformance) {
         const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
         const result = Object.assign({}, aPerformance);
         result.play = calculator.play;
-        result.amount = amountFor(result);
+        result.amount = calculator.amount;
         result.volumeCredits = volumeCreditsFor(result);
         return result;
     }
@@ -52,33 +51,4 @@ export function creatStatmentData(invoice, plays) {
         return plays[aPerformance.playID];
     }
     
-    /**
-     * 1. 함수 추출 / 장르별 금액 계산하는 함수
-     * @param {*} perf 
-     * @param {*} aPerformance 
-     * @returns thismount : int
-     */
-    function amountFor(aPerformance) {
-        let result = 0;
-    
-        switch (aPerformance.play.type) {
-            case "tragedy": //비극
-                result = 40000;
-                if (aPerformance.audience > 30) {
-                    result += 10000 + 500 * (aPerformance.audience - 30);
-                }
-                break;
-            case "comedy": //희극
-                result = 30000;
-                if (aPerformance.audience > 20) {
-                    result += 10000 + 500 * (aPerformance.audience - 20);
-                }
-                result += 300 * aPerformance.audience;
-                break;
-            default:
-                throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`);
-        }
-    
-        return result;
-    }
 }
