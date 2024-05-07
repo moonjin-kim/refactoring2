@@ -9,7 +9,7 @@ export function creatStatmentData(invoice, plays) {
     return result;
 
     function enrichPerformance(aPerformance) {
-        const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
+        const calculator = createPerformancecalculator(aPerformance, playFor(aPerformance));
         const result = Object.assign({}, aPerformance);
         result.play = calculator.play;
         result.amount = calculator.amount;
@@ -35,15 +35,13 @@ export function creatStatmentData(invoice, plays) {
         return result
     }
     
-    // 3. 포인트 추가 함수 추출
-    function volumeCreditsFor(aPerformance) {
-        return new PerformanceCalculator(aPerformance, playFor(aPerformance)).volumeCredits;
-    }
-    
-    
     //2. 공연 명 반환
     function playFor(aPerformance) {
         return plays[aPerformance.playID];
     }
     
+}
+
+function createPerformancecalculator(aPerformance, aPlay) {
+    return new PerformanceCalculator(aPerformance, aPlay);
 }
