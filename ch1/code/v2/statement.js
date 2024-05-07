@@ -1,20 +1,66 @@
-function statement(invoice, plays) {
-    let result = `청구 내역 (고객명: ${invoice.customer})\n`;
+class PerformanceCalculator {
+    constructor(aPerformance) {
+        this.performance = aPerformance;
+    }
+}
 
-    for (let perf of invoice.performances) {
+function statement(invoice, plays) {
+    return renderPlainText(creatStatmentData(invoice, plays));
+}
+
+function htmlStatement(invoice, plays) {
+    return renderHtml(creatStatmentData(invoice, plays));
+}
+
+function renderHtml(data) {
+    let result = `<h1>청구 내역 (고객명: ${data.customer})</h1>\n`
+    result += `<table>\n`;
+    result += "<tr><th>연극</th><th>좌석 수</th><th>금액</th></tr>";
+    for (let perf of data.performances) {
+        result += ` <tr><td>${perf.play.name}</td><td>(${perf.auience}석)</td>`
+        result += `<td>${usd(perf.amount)}</td></tr>`
+    }
+    result += "</table>/n";
+    result += `<p>총액: <em>${usd(data.totalAmount)}</em></p>\n`;
+    result += `<p>적립 포인트: <em>${data.totalVolumeCredits}</em>점</p>\n`;
+    return result;
+}
+ 
+function creatStatmentData(invoice, plays) {
+    const result = {};
+    result.customer = invoice.customer;
+    result.performances = invoice.performances.map(enrichPerformance);
+    result.totalAmount = totalAmount(result);
+    result.totalVolumeCredits = totalVolumeCredits(result);
+    return result;
+}
+
+function enrichPerformance(aPerformance) {
+    const result = Object.assign({}, aPerformance);
+    result.play = playFor(result)
+    result.amount = amountFor(result);
+    result.volumeCredits = volumeCreditsFor(result);
+    return result;
+}
+
+
+function renderPlainText(data) {
+    let result = `청구 내역 (고객명: ${data.customer})\n`;
+
+    for (let perf of data.performances) {
         // 청구 내역을 출력
-        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience})석\n`;
+        result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience})석\n`;
     }
 
-    result += `총액: ${usd(totalAmount(invoice))}\n`;
-    result += `적립 포인트: ${totalVolumeCredits(invoice)}점\n`;
-    return result;
+    result += `총액: ${usd(data.totalAmount)}\n`;
+    result += `적립 포인트: ${data.totalVolumeCredits}점\n`;
+    return result
 }
 
 function totalAmount(invoice) {
     let result = 0;
     for (let perf of invoice.performances) {
-        result += amountFor(perf);
+        result += perf.amount;
     }
 
     return result
@@ -24,7 +70,7 @@ function totalVolumeCredits(invoice) {
     let result = 0;
     for (let perf of invoice.performances) {
         // 포인트 적립
-        result += volumeCreditsFor(perf);
+        result += perf.volumeCredits;
     }
     return result
 }
@@ -47,6 +93,7 @@ function volumeCreditsFor(perf) {
     return result;
 }
 
+
 //2. 공연 명 반환
 function playFor(aPerformance) {
     return plays[aPerformance.playID];
@@ -61,7 +108,7 @@ function playFor(aPerformance) {
 function amountFor(aPerformance) {
     let result = 0;
 
-    switch (playFor(aPerformance).type) {
+    switch (aPerformance.play.type) {
         case "tragedy": //비극
             result = 40000;
             if (aPerformance.audience > 30) {
@@ -76,7 +123,7 @@ function amountFor(aPerformance) {
             result += 300 * aPerformance.audience;
             break;
         default:
-            throw new Error(`알 수 없는 장르: ${playFor(aPerformance).type}`);
+            throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`);
     }
 
     return result;
@@ -109,3 +156,4 @@ const plays = {
 };
 
 console.log(statement(invoiceDatas[0],plays))
+console.log(htmlStatement(invoiceDatas[0],plays))

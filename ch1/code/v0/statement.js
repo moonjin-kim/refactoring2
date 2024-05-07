@@ -1,32 +1,3 @@
-const fs = require('fs');
-const jsonFile = fs.readFileSync('/data/invoices.json', 'utf8');
-const invoiceDatas = JSON.parse(jsonFile);
-// const invoiceDatas = [
-//     {
-//         "customer" : "BigCo",
-//         "performances": [
-//             {
-//                 "playID" : "hamlet",
-//                 "audience": 55
-//             },
-//             {
-//                 "playID" : "as-like",
-//                 "audience": 35
-//             },
-//             {
-//                 "playID" : "othello",
-//                 "audience": 40
-//             }
-//         ]
-//     }
-// ]
-
-const playData = {
-    "hamlet" : {"name" : "Hamlet" , "type": "tragedy"},
-    "as-like" : {"name": "As You Like It", "type" : "comedy"},
-    "othello": {"name": "Othello", "type": "tragedy"}
-};
-
 function statement(invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
@@ -71,5 +42,31 @@ function statement(invoice, plays) {
     result += `적립 포인트: ${volumeCredits}점\n`;
     return result;
 }
+
+const invoiceDatas = [
+    {
+        "customer" : "BigCo",
+        "performances": [
+            {
+                "playID" : "hamlet",
+                "audience": 55
+            },
+            {
+                "playID" : "as-like",
+                "audience": 35
+            },
+            {
+                "playID" : "othello",
+                "audience": 40
+            }
+        ]
+    }
+]
+
+const playData = {
+    "hamlet" : {"name" : "Hamlet" , "type": "tragedy"},
+    "as-like" : {"name": "As You Like It", "type" : "comedy"},
+    "othello": {"name": "Othello", "type": "tragedy"}
+};
 
 console.log(statement(invoiceDatas[0],playData))

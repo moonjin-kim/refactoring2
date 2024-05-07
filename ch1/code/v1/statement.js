@@ -1,41 +1,20 @@
 function statement(invoice, plays) {
-    return renderPlainText(creatStatmentData(invoice, plays));
-}
+    let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
-function creatStatmentData(invoice, plays) {
-    const result = {};
-    result.customer = invoice.customer;
-    result.performances = invoice.performances.map(enrichPerformance);
-    result.totalAmount = totalAmount(statementData);
-    result.totalVolumeCredits = totalVolumeCredits(statementData);
-    return result;
-}
-
-function enrichPerformance(aPerformance) {
-    const result = Object.assign({}, aPerformance);
-    result.play = playFor(result)
-    result.amount = amountFor(result);
-    result.volumeCredits = volumeCreditsFor(result);
-    return result;
-}
-
-function renderPlainText(data) {
-    let result = `청구 내역 (고객명: ${data.customer})\n`;
-
-    for (let perf of data.performances) {
+    for (let perf of invoice.performances) {
         // 청구 내역을 출력
-        result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience})석\n`;
+        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience})석\n`;
     }
 
-    result += `총액: ${usd(data.totalAmount)}\n`;
-    result += `적립 포인트: ${data.totalVolumeCredits}점\n`;
-    return result
+    result += `총액: ${usd(totalAmount(invoice))}\n`;
+    result += `적립 포인트: ${totalVolumeCredits(invoice)}점\n`;
+    return result;
 }
 
 function totalAmount(invoice) {
     let result = 0;
     for (let perf of invoice.performances) {
-        result += perf.amount;
+        result += amountFor(perf);
     }
 
     return result
@@ -45,7 +24,7 @@ function totalVolumeCredits(invoice) {
     let result = 0;
     for (let perf of invoice.performances) {
         // 포인트 적립
-        result += perf.volumeCredits;
+        result += volumeCreditsFor(perf);
     }
     return result
 }
@@ -68,7 +47,6 @@ function volumeCreditsFor(perf) {
     return result;
 }
 
-
 //2. 공연 명 반환
 function playFor(aPerformance) {
     return plays[aPerformance.playID];
@@ -83,7 +61,7 @@ function playFor(aPerformance) {
 function amountFor(aPerformance) {
     let result = 0;
 
-    switch (aPerformance.play.type) {
+    switch (playFor(aPerformance).type) {
         case "tragedy": //비극
             result = 40000;
             if (aPerformance.audience > 30) {
@@ -98,7 +76,7 @@ function amountFor(aPerformance) {
             result += 300 * aPerformance.audience;
             break;
         default:
-            throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`);
+            throw new Error(`알 수 없는 장르: ${playFor(aPerformance).type}`);
     }
 
     return result;
@@ -131,3 +109,5 @@ const plays = {
 };
 
 console.log(statement(invoiceDatas[0],plays))
+
+console.log(htmlStatement(invoiceDatas[0],plays))
