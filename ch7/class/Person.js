@@ -1,14 +1,13 @@
+import {TelephoneNumber} from "./TelephoneNumber.js";
+
 class Person {
     name;
     telephoneNumber;
     officeAreaCode;
     officeNumber;
 
-    constructor(name, telephoneNumber, officeAreaCode, officeNumber) {
-        this._name = name;
-        this._telephoneNumber = telephoneNumber;
-        this._officeAreaCode = officeAreaCode;
-        this._officeNumber = officeNumber;
+    constructor() {
+        this._telephoneNumber = new TelephoneNumber();
     }
 
 
@@ -21,23 +20,24 @@ class Person {
     }
 
     get telephoneNumber() {
-        return `(${this._officeAreaCode}) ${this._officeNumber}`;
+        return this._telephoneNumber.telephoneNumber;
     }
 
 
     get officeAreaCode() {
-        return this._officeAreaCode;
+        return this._telephoneNumber.officeAreaCode;
     }
 
-    set officeAreaCode(value) {
-        this._officeAreaCode = value;
+    set officeAreaCode(arg) {
+        this._telephoneNumber.officeAreaCode = arg;
     }
 
     get officeNumber() {
-        return this._officeNumber;
+        return this._telephoneNumber.officeNumber;
     }
 
-    set officeNumber(value) {
-        this._officeNumber = value;
+    set officeNumber(arg) {
+        this._telephoneNumber.officeNumber = arg;
     }
+
 }
