@@ -53,9 +53,7 @@ class Rating {
     }
 
     get voyageLengthFactor() {
-        let result = 0;
-        if (this.voyage.length > 14) result -= 1;
-        return result;
+        return (this.voyage.length > 14) ? -1 : 0;
     }
 
     get historyLengthFactor() {
@@ -70,8 +68,12 @@ class ExperiencedChinaRating extends Rating {
         return Math.max(result, 0);
     }
 
+    get voyageProfitFactor() {
+        return super.voyageProfitFactor + 3;
+    }
+
     get voyageLengthFactor() {
-        let result = 3;
+        let result = 0;
         if (this.voyage.length > 12) result += 1;
         if (this.voyage.length > 18) result += 1;
         return result;
