@@ -2,12 +2,14 @@ function plumages(birds) {
     return new Map(birds
         .map(b => createBird(b))
         .map(bird => [bird.name, bird.plumage])
-
     )
 }
 
 function speeds(birds) {
-    return new Map(birds.map(b => [b.name, airSpeedVelocity(b)]));
+    return new Map(birds
+        .map(b => createBird(b))
+        .map(bird => [bird.name, bird.airSpeedVelocity])
+    )
 }
 
 function plumage(bird) {
@@ -42,16 +44,7 @@ class Bird {
     }
 
     get airSpeedVelocity() {
-        switch (this.type) {
-            case '유럽 제비':
-                return 35;
-            case '아프리카 제비':
-                return 40 - 2 * this.numberOfCoconuts;
-            case '노르웨이 파랑 앵무':
-                return this.isNailed ? 0 : 10 + this.voltage / 10;
-            default:
-                return null;
-        }
+        return null;
     }
 }
 
@@ -59,16 +52,28 @@ class EuropeanSwallow extends Bird {
     get plumage() {
         return "보통이다";
     }
+
+    get airSpeedVelocity() {
+        return 35;
+    }
 }
 
 class AfricanSwallow extends Bird {
     get plumage() {
         return (this.numberOfCoconuts > 100) ? "지쳤다" : "보통이다";
     }
+
+    get airSpeedVelocity() {
+        return 40 - 2 * this.numberOfCoconuts;
+    }
 }
 
 class NorwegianBlueParrot extends Bird {
     get plumage() {
         return (this.voltage > 100) ? "그을렸다" : "예쁘다";
+    }
+
+    get airSpeedVelocity() {
+        return this.isNailed ? 0 : 10 + this.voltage / 10;
     }
 }
