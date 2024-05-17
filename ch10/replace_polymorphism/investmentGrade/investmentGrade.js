@@ -1,8 +1,24 @@
 import * as assert from "node:assert";
 
 function rating(voyage, history) {
-    return new Rating(voyage, history).value;
+    return createRating(voyage, history).value;
 }
+
+function createRating(voyage, history) {
+    if (voyage.zone === "중국" && history.some(v => "중국" === v.zone))
+        return new ExperiencedChinaRating(voyage, history);
+    else
+        return new Rating(voyage, history);
+}
+
+
+class ExperiencedChinaRating extends Rating {
+    get captainHistoryRisk() {
+        const result = super.captainHistoryRisk - 2;
+        return Math.max(result, 0);
+    }
+}
+
 
 class Rating {
     constructor(voyage, history) {
@@ -30,7 +46,6 @@ class Rating {
         let result = 1;
         if (this.history.length > 4) result += 4;
         result += this.history.filter(v => v.profit < 0).length;
-        if (this.voyage.zone === "중국" && this.hasChina) result -= 2;
         return Math.max(result, 0);
     }
 
@@ -42,7 +57,7 @@ class Rating {
         let result = 2;
         if (this.voyage.zone === "중국") result+=1;
         if (this.voyage.zone === "동인도") result+=1;
-        if (this.voyage.zone === "중국" && hasChina(this.history)) {
+        if (this.voyage.zone === "중국" && this.hasChina()) {
             result += 3;
             if (this.history.length > 10) result += 1;
             if (this.history.length > 12) result += 1;
@@ -54,6 +69,7 @@ class Rating {
         return result
     }
 }
+
 
 const voyage = {zone: "서인도", length: 10};
 const history = [
